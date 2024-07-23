@@ -1,0 +1,14 @@
+what is the use of "next" in user.routes.js?
+do we just use one ResponseHandler object (line 13) in user.routes.js and never make a new one?
+use index.js in Route folder instead of user.routes directly!
+use index.js in app folder instead of the folders directly
+
+* made a new file for mongoose connection in database folder
+
+
+
+
+****
+microsevice
+JSDocs
+httpie
