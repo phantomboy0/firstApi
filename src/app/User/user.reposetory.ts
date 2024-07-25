@@ -1,5 +1,4 @@
-const User = require("./user.model");
-import { ObjectId } from "mongoose";
+import User, { userModel } from "./user.model";
 
 class UserReposetory {
   user: any;
@@ -7,20 +6,21 @@ class UserReposetory {
     this.user = User;
   }
 
-  createUser = async (user: any) => await new this.user(user).save();
-  updateUser = async (_id: string, user: object) =>
+  createUser = async (user: userModel) => await new this.user(user).save();
+  updateUser = async (_id: string, user: userModel) =>
     await this.user.findByIdAndUpdate(_id, user, { new: true });
   getUser = async (_id: string) => this.user.findById(_id);
   deleteUser = async (_id: string) => this.user.findByIdAndDelete(_id);
 
-  isPhoneNumberExist = async (phoneNumber: string) => {
-    const result = await this.user.findOne({
-      phoneNumber: phoneNumber,
-    });
-
-    if (result) return true;
+  isPhoneNumberExist = async (phoneNumber: string): Promise<boolean> => {
+    if (
+      await this.user.findOne({
+        phoneNumber: phoneNumber,
+      })
+    )
+      return true;
     else return false;
   };
 }
 
-module.exports = new UserReposetory(User);
+export default new UserReposetory(User);

@@ -1,2 +1,2 @@
-const ResponseHandler = require("./responsehandler");
-module.exports = { ResponseHandler };
+import ResponseHandler from "./responsehandler.js";
+export { ResponseHandler };

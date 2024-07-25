@@ -1,7 +1,7 @@
-const UserReposetory = require("./user.reposetory");
-const { ResponseHandler } = require("../handlers");
-import { Request, Response } from "express";
-import { ObjectId } from "mongoose";
+import { userModel } from "./user.model";
+
+import UserReposetory from "./user.reposetory";
+import { ResponseHandler } from "../handlers";
 
 class UserService {
   userReposetory: any;
@@ -17,77 +17,76 @@ class UserService {
     this.responseHandler = ResponseHandler;
   }
 
-  createUser = async (user: any) => await this.userReposetory.createUser(user);
+  createUser = async (user: userModel) =>
+    await this.userReposetory.createUser(user);
   updateUser = async (_id: string, user: any) =>
     await this.userReposetory.updateUser(_id, user);
   getUser = async (_id: string) => this.userReposetory.getUser(_id);
   deleteUser = async (_id: string) => this.userReposetory.deleteUser(_id);
-
-  isPhoneNumberValid = (res: Response, phoneNumber: string) => {
-    if (!/09[0-9]{9,9}/.test(phoneNumber))
-      return this.responseHandler.send({
-        res,
-        statusCode: 409,
-        returnObj: "phone num format should be 09xxxxxxxxx",
-      });
+  /**
+   * check if the PhoneNumber is in iran's correct format
+   * @param res express Respone
+   * @param phoneNumber the PhoneNumber to check
+   * @returns
+   */
+  isPhoneNumberValid = (phoneNumber: string): boolean => {
+    if (/^09[0-9]{9}$/.test(phoneNumber)) return true;
+    else return false;
   };
 
-  isPhoneNumberExist = async (res: any, phoneNumber: string) => {
+  isPhoneNumberExist = async (phoneNumber: string) => {
     try {
       const result: boolean = await this.userReposetory.isPhoneNumberExist(
         phoneNumber
       );
 
-      if (result)
-        return this.responseHandler.send({
-          res,
-          statusCode: 409,
-          returnObj: "a user with this phone number exist",
-        });
+      if (result) return true;
+      else return false;
     } catch (error: any) {
-      return this.responseHandler.send({
-        res,
-        statusCode: 500,
-        returnObj: error.message,
-      });
+      console.error(error);
     }
   };
 
-  checkFeildsNeedsToUpdate = async (res: Response, newData: any) => {
+  checkFeildsNeedsToUpdate = async (newData: any): Promise<object> => {
     let updateQuery = {
-      phoneNumber: "",
-      userName: "",
-      password: "",
-      firstName: "",
-      lastName: "",
-      email: "",
-      isBlocked: "",
+      phoneNumber: undefined,
+      userName: undefined,
+      password: undefined,
+      firstName: undefined,
+      lastName: undefined,
+      email: undefined,
+      isBlocked: undefined,
     };
 
     if (newData.new_phoneNumber.trim().length !== 0) {
-      if (
-        this.isPhoneNumberValid(res, newData.phoneNumber) ||
-        (await this.isPhoneNumberExist(res, newData.phoneNumber))
-      ) {
-        return;
-      }
+      if (!this.isPhoneNumberValid(newData.new_phoneNumber))
+        return {
+          statusCode: 409,
+          returnObj: "phone number should formatted like 09xxxxxxxxx",
+        };
+
+      if (await this.isPhoneNumberExist(newData.new_phoneNumber))
+        return {
+          statusCode: 409,
+          returnObj: "a user with this fucked phone number exist",
+        };
 
       updateQuery.phoneNumber = newData.new_phoneNumber;
     }
 
-    if (newData.new_userName.trim().length !== 0)
+    if (typeof newData.new_userName === "string")
       updateQuery.userName = newData.new_userName;
 
-    if (newData.new_password.trim().length !== 0)
+    if (typeof newData.new_password === "string")
       updateQuery.password = newData.new_password;
 
-    if (newData.new_firstName.trim().length !== 0)
+    if (typeof newData.new_firstName === "string")
       updateQuery.firstName = newData.new_lastName;
 
-    if (newData.new_lastName.trim().length !== 0)
+    if (typeof newData.new_lastName === "string")
       updateQuery.lastName = newData.new_lastName;
 
-    if (newData.new_email.trim().length !== 0)
+    if (typeof newData.new_email === "string")
       updateQuery.email = newData.new_email;
 
     if (typeof newData.new_isBlocked === "boolean")
@@ -97,4 +96,7 @@ class UserService {
   };
 }
 
-module.exports = new UserService({ UserReposetory, ResponseHandler });
+export default new UserService({
+  UserReposetory,
+  ResponseHandler,
+});

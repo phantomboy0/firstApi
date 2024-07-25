@@ -11,8 +11,10 @@ class ResponseHandler {
         if (typeof returnObj === "string") {
             return res.status(statusCode).json({ msg: returnObj });
         }
-        return res.status(statusCode).json(returnObj);
+        else {
+            return res.status(statusCode).json(returnObj);
+        }
     }
 }
-module.exports = new ResponseHandler();
+exports.default = new ResponseHandler();
 //# sourceMappingURL=responsehandler.js.map

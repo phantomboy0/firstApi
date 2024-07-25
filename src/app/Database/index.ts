@@ -1,3 +1,2 @@
-const mongoose = require("./mongoose");
-
-module.exports = mongoose;
+import mongoose from "./mongoose";
+export default mongoose;

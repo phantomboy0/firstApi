@@ -1,7 +1,7 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const { ResponseHandler } = require("../handlers");
-const { UserController } = require("../User");
+import express from "express";
+import mongoose from "mongoose";
+import { ResponseHandler } from "../handlers";
+import UserController from "../User";
 import { Request, Response } from "express";
 
 const router = express.Router();
@@ -17,4 +17,4 @@ router.delete("/:_id", use(UserController.DeleteUserById.bind(UserController)));
 
 router.patch("/:_id", use(UserController.UpdateUserById.bind(UserController)));
 
-module.exports = router;
+export const UserRoutes = router;

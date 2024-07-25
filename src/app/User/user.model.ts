@@ -1,4 +1,14 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+
+export interface userModel {
+  userName: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  isBlocked: boolean;
+}
 
 const userSchema = new mongoose.Schema(
   {
@@ -13,4 +23,4 @@ const userSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
-module.exports = mongoose.model("users", userSchema);
+export default mongoose.model("users", userSchema);

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 class ResponseHandler {
   constructor(/*res, statusCode, returnObj*/) {
     // this.res = res;
@@ -15,12 +15,13 @@ class ResponseHandler {
     statusCode: number;
     returnObj: object | string;
   }) {
-    //if returnObj arg is string , show it as msg
+    //if returnObj param is string , show it as msg
     if (typeof returnObj === "string") {
       return res.status(statusCode).json({ msg: returnObj });
+    } else {
+      return res.status(statusCode).json(returnObj);
     }
-    return res.status(statusCode).json(returnObj);
   }
 }
 
-module.exports = new ResponseHandler();
+export default new ResponseHandler();

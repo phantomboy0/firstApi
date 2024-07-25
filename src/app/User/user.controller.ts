@@ -1,6 +1,6 @@
-const UserModel = require("./user.model");
-const { ResponseHandler } = require("../handlers");
-const UserService = require("./user.service");
+import UserModel from "./user.model";
+import { ResponseHandler } from "../handlers";
+import UserService from "./user.service";
 import { Request, Response } from "express";
 
 class UserController {
@@ -24,12 +24,19 @@ class UserController {
 
   RegisterUser = async (req: Request, res: Response) => {
     try {
-      if (
-        this.userService.isPhoneNumberValid(res, req.body.phoneNumber) ||
-        (await this.userService.isPhoneNumberExist(res, req.body.phoneNumber))
-      ) {
-        return;
-      }
+      if (!this.userService.isPhoneNumberValid(req.body.phoneNumber))
+        return this.responseHandler.send({
+          res,
+          statusCode: 409,
+          returnObj: "phone number should formatted like 09xxxxxxxxx",
+        });
+
+      if (await this.userService.isPhoneNumberExist(req.body.phoneNumber))
+        return this.responseHandler.send({
+          res,
+          statusCode: 409,
+          returnObj: "a user with this fucked phone number exist",
+        });
 
       const newUser = new this.userModel(req.body);
       try {
@@ -116,9 +123,15 @@ class UserController {
   UpdateUserById = async (req: Request, res: Response) => {
     try {
       const updateQuery = await this.userService.checkFeildsNeedsToUpdate(
-        res,
         req.body
       );
+
+      //if there is any statusCode returned, that means problem!
+      if (updateQuery.statusCode)
+        return this.responseHandler.send({
+          res,
+          ...updateQuery,
+        });
 
       const result = await this.userService.updateUser(
         req.params._id,
@@ -148,7 +161,7 @@ class UserController {
   };
 }
 
-module.exports = new UserController({
+export default new UserController({
   UserModel,
   ResponseHandler,
   UserService,

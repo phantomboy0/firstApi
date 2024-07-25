@@ -1,9 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const UserModel = require("./user.model");
-const { ResponseHandler } = require("../handlers");
-const UserService = require("./user.service");
-console.log(typeof UserModel);
+const user_model_1 = __importDefault(require("./user.model"));
+const handlers_1 = require("../handlers");
+const user_service_1 = __importDefault(require("./user.service"));
 class UserController {
     userModel;
     responseHandler;
@@ -15,10 +17,18 @@ class UserController {
     }
     RegisterUser = async (req, res) => {
         try {
-            if (this.userService.isPhoneNumberValid(res, req.body.phoneNumber) ||
-                (await this.userService.isPhoneNumberExist(res, req.body.phoneNumber))) {
-                return;
-            }
+            if (!this.userService.isPhoneNumberValid(req.body.phoneNumber))
+                return this.responseHandler.send({
+                    res,
+                    statusCode: 409,
+                    returnObj: "phone number should formatted like 09xxxxxxxxx",
+                });
+            if (await this.userService.isPhoneNumberExist(req.body.phoneNumber))
+                return this.responseHandler.send({
+                    res,
+                    statusCode: 409,
+                    returnObj: "a user with this fucked phone number exist",
+                });
             const newUser = new this.userModel(req.body);
             try {
                 await this.userService.createUser(newUser);
@@ -104,7 +114,13 @@ class UserController {
     };
     UpdateUserById = async (req, res) => {
         try {
-            const updateQuery = await this.userService.checkFeildsNeedsToUpdate(res, req.body);
+            const updateQuery = await this.userService.checkFeildsNeedsToUpdate(req.body);
+            //if there is any statusCode returned, that means problem!
+            if (updateQuery.statusCode)
+                return this.responseHandler.send({
+                    res,
+                    ...updateQuery,
+                });
             const result = await this.userService.updateUser(req.params._id, updateQuery);
             if (result) {
                 return this.responseHandler.send({
@@ -130,9 +146,9 @@ class UserController {
         }
     };
 }
-module.exports = new UserController({
-    UserModel,
-    ResponseHandler,
-    UserService,
+exports.default = new UserController({
+    UserModel: user_model_1.default,
+    ResponseHandler: handlers_1.ResponseHandler,
+    UserService: user_service_1.default,
 });
 //# sourceMappingURL=user.controller.js.map

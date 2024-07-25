@@ -1,6 +1,9 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const User = require("./user.model");
+const user_model_1 = __importDefault(require("./user.model"));
 class UserReposetory {
     user;
     constructor(User) {
@@ -11,14 +14,13 @@ class UserReposetory {
     getUser = async (_id) => this.user.findById(_id);
     deleteUser = async (_id) => this.user.findByIdAndDelete(_id);
     isPhoneNumberExist = async (phoneNumber) => {
-        const result = await this.user.findOne({
+        if (await this.user.findOne({
             phoneNumber: phoneNumber,
-        });
-        if (result)
+        }))
             return true;
         else
             return false;
     };
 }
-module.exports = new UserReposetory(User);
+exports.default = new UserReposetory(user_model_1.default);
 //# sourceMappingURL=user.reposetory.js.map
