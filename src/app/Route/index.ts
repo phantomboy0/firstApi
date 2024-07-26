@@ -1,8 +1,9 @@
 import { UserRoutes } from "./user.routes";
 import express from "express";
-const router = express.Router();
 import { ResponseHandler } from "../handlers";
 import { Request, Response } from "express";
+
+const router = express.Router();
 
 router.use("/user", UserRoutes);
 

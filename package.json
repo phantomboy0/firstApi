@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/bun": "^1.1.6",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.14.12",
     "dotenv": "^16.4.5",

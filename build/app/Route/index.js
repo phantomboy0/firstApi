@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Routes = void 0;
 const user_routes_1 = require("./user.routes");
 const express_1 = __importDefault(require("express"));
-const router = express_1.default.Router();
 const handlers_1 = require("../handlers");
+const router = express_1.default.Router();
 router.use("/user", user_routes_1.UserRoutes);
 router.get("/", (req, res) => {
     return handlers_1.ResponseHandler.send({ res, statusCode: 200, returnObj: "OK" });
