@@ -24,5 +24,5 @@ class ResponseHandler {
     }
   }
 }
-
+export { ResponseHandler };
 export const _ResponseHandler = new ResponseHandler();

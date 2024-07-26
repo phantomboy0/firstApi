@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_model_1 = __importDefault(require("./user.model"));
-const handlers_1 = __importDefault(require("../handlers"));
+const handlers_1 = require("../handlers");
 const user_service_1 = __importDefault(require("./user.service"));
 class UserController {
     userModel;
@@ -147,7 +147,7 @@ class UserController {
 }
 exports.default = new UserController({
     UserModel: user_model_1.default,
-    ResponseHandler: handlers_1.default,
+    ResponseHandler: handlers_1.ResponseHandler,
     UserService: user_service_1.default,
 });
 //# sourceMappingURL=user.controller.js.map

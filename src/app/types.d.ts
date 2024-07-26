@@ -1,16 +1,7 @@
 import { Request, Response } from "express";
+import { responseHandler } from "./handlers";
 
-export interface responseHandler {
-  send({
-    res,
-    statusCode,
-    returnObj,
-  }: {
-    res: Response;
-    statusCode: number;
-    returnObj: object | string;
-  }): Response;
-}
+export { responseHandler };
 
 export interface userModel {
   userName: string;

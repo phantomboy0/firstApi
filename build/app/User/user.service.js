@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_reposetory_1 = __importDefault(require("./user.reposetory"));
-const handlers_1 = __importDefault(require("../handlers"));
+const handlers_1 = require("../handlers");
 class UserService {
     userReposetory;
     responseHandler;
@@ -74,6 +74,6 @@ class UserService {
 }
 exports.default = new UserService({
     UserReposetory: user_reposetory_1.default,
-    ResponseHandler: handlers_1.default,
+    ResponseHandler: handlers_1.ResponseHandler,
 });
 //# sourceMappingURL=user.service.js.map

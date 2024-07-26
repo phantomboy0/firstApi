@@ -1,15 +1,17 @@
 import { userModel, responseHandler } from "../types";
-import UserReposetory from "./user.reposetory";
+import UserReposetory, {
+  UserReposetory as userReposetory,
+} from "./user.reposetory";
 import { ResponseHandler } from "../handlers";
 
 class UserService {
-  userReposetory: any;
+  userReposetory: userReposetory;
   responseHandler: responseHandler;
   constructor({
     UserReposetory,
     ResponseHandler,
   }: {
-    UserReposetory: any;
+    UserReposetory: userReposetory;
     ResponseHandler: responseHandler;
   }) {
     this.userReposetory = UserReposetory;

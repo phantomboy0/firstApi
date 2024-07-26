@@ -24,4 +24,5 @@ class UserReposetory {
   };
 }
 
+export { UserReposetory };
 export default new UserReposetory(User);
