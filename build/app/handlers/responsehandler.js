@@ -1,13 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports._ResponseHandler = void 0;
 class ResponseHandler {
-    constructor( /*res, statusCode, returnObj*/) {
-        // this.res = res;
-        // this.statusCode = statusCode;
-        // this.returnObj = returnObj;
+    constructor() {
     }
     send({ res, statusCode, returnObj, }) {
-        //if returnObj arg is string , show it as msg
         if (typeof returnObj === "string") {
             return res.status(statusCode).json({ msg: returnObj });
         }
@@ -16,5 +13,5 @@ class ResponseHandler {
         }
     }
 }
-exports.default = new ResponseHandler();
+exports._ResponseHandler = new ResponseHandler();
 //# sourceMappingURL=responsehandler.js.map

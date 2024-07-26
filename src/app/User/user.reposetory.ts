@@ -1,4 +1,5 @@
-import User, { userModel } from "./user.model";
+import User from "./user.model";
+import { userModel } from "../types";
 
 class UserReposetory {
   user: any;

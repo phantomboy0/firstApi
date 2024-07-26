@@ -1,17 +1,16 @@
-import { userModel } from "./user.model";
-
+import { userModel, responseHandler } from "../types";
 import UserReposetory from "./user.reposetory";
 import { ResponseHandler } from "../handlers";
 
 class UserService {
   userReposetory: any;
-  responseHandler: any;
+  responseHandler: responseHandler;
   constructor({
     UserReposetory,
     ResponseHandler,
   }: {
     UserReposetory: any;
-    ResponseHandler: any;
+    ResponseHandler: responseHandler;
   }) {
     this.userReposetory = UserReposetory;
     this.responseHandler = ResponseHandler;
@@ -68,7 +67,7 @@ class UserService {
       if (await this.isPhoneNumberExist(newData.new_phoneNumber))
         return {
           statusCode: 409,
-          returnObj: "a user with this fucked phone number exist",
+          returnObj: "a user with this phone number exist",
         };
 
       updateQuery.phoneNumber = newData.new_phoneNumber;

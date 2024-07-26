@@ -1,4 +1,5 @@
 import { Response } from "express";
+
 class ResponseHandler {
   constructor(/*res, statusCode, returnObj*/) {
     // this.res = res;
@@ -14,7 +15,7 @@ class ResponseHandler {
     res: Response;
     statusCode: number;
     returnObj: object | string;
-  }) {
+  }): Response {
     //if returnObj param is string , show it as msg
     if (typeof returnObj === "string") {
       return res.status(statusCode).json({ msg: returnObj });
@@ -24,4 +25,4 @@ class ResponseHandler {
   }
 }
 
-export default new ResponseHandler();
+export const _ResponseHandler = new ResponseHandler();

@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_model_1 = __importDefault(require("./user.model"));
-const handlers_1 = require("../handlers");
+const handlers_1 = __importDefault(require("../handlers"));
 const user_service_1 = __importDefault(require("./user.service"));
 class UserController {
     userModel;
@@ -27,7 +27,7 @@ class UserController {
                 return this.responseHandler.send({
                     res,
                     statusCode: 409,
-                    returnObj: "a user with this fucked phone number exist",
+                    returnObj: "a user with this phone number exist",
                 });
             const newUser = new this.userModel(req.body);
             try {
@@ -115,7 +115,6 @@ class UserController {
     UpdateUserById = async (req, res) => {
         try {
             const updateQuery = await this.userService.checkFeildsNeedsToUpdate(req.body);
-            //if there is any statusCode returned, that means problem!
             if (updateQuery.statusCode)
                 return this.responseHandler.send({
                     res,
@@ -148,7 +147,7 @@ class UserController {
 }
 exports.default = new UserController({
     UserModel: user_model_1.default,
-    ResponseHandler: handlers_1.ResponseHandler,
+    ResponseHandler: handlers_1.default,
     UserService: user_service_1.default,
 });
 //# sourceMappingURL=user.controller.js.map

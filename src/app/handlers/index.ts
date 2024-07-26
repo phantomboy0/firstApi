@@ -1,2 +1,2 @@
-import ResponseHandler from "./responsehandler.js";
-export { ResponseHandler };
+import { _ResponseHandler } from "./responsehandler.js";
+export const ResponseHandler = _ResponseHandler;

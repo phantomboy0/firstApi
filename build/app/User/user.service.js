@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_reposetory_1 = __importDefault(require("./user.reposetory"));
-const handlers_1 = require("../handlers");
+const handlers_1 = __importDefault(require("../handlers"));
 class UserService {
     userReposetory;
     responseHandler;
@@ -16,12 +16,6 @@ class UserService {
     updateUser = async (_id, user) => await this.userReposetory.updateUser(_id, user);
     getUser = async (_id) => this.userReposetory.getUser(_id);
     deleteUser = async (_id) => this.userReposetory.deleteUser(_id);
-    /**
-     * check if the PhoneNumber is in iran's correct format
-     * @param res express Respone
-     * @param phoneNumber the PhoneNumber to check
-     * @returns
-     */
     isPhoneNumberValid = (phoneNumber) => {
         if (/^09[0-9]{9}$/.test(phoneNumber))
             return true;
@@ -59,7 +53,7 @@ class UserService {
             if (await this.isPhoneNumberExist(newData.new_phoneNumber))
                 return {
                     statusCode: 409,
-                    returnObj: "a user with this fucked phone number exist",
+                    returnObj: "a user with this phone number exist",
                 };
             updateQuery.phoneNumber = newData.new_phoneNumber;
         }
@@ -80,6 +74,6 @@ class UserService {
 }
 exports.default = new UserService({
     UserReposetory: user_reposetory_1.default,
-    ResponseHandler: handlers_1.ResponseHandler,
+    ResponseHandler: handlers_1.default,
 });
 //# sourceMappingURL=user.service.js.map

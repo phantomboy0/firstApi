@@ -1,11 +1,12 @@
 import UserModel from "./user.model";
 import { ResponseHandler } from "../handlers";
+import { responseHandler } from "../types";
 import UserService from "./user.service";
 import { Request, Response } from "express";
 
 class UserController {
   userModel: any;
-  responseHandler: any;
+  responseHandler: responseHandler;
   userService: any;
 
   constructor({
@@ -14,7 +15,7 @@ class UserController {
     UserService,
   }: {
     UserModel: any;
-    ResponseHandler: any;
+    ResponseHandler: responseHandler;
     UserService: any;
   }) {
     this.userModel = UserModel;
@@ -35,7 +36,7 @@ class UserController {
         return this.responseHandler.send({
           res,
           statusCode: 409,
-          returnObj: "a user with this fucked phone number exist",
+          returnObj: "a user with this phone number exist",
         });
 
       const newUser = new this.userModel(req.body);

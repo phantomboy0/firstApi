@@ -1,13 +1,5 @@
-import express from "express";
-const app = express();
-const PORT = 3000;
-import { Routes } from "./app/Route";
-import db from "./app/Database/index.js";
-db.connect("mongodb://localhost:27017/firstApi");
+import App from "./app";
+const PORT: number = 3000;
+const MongoPORT: number = 27017;
 
-app.use(express.json());
-app.use("/api", Routes);
-
-app.listen(PORT, () => {
-  console.log(`Server is on http://localhost:${PORT}`);
-});
+new App(PORT, MongoPORT);
