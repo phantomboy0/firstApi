@@ -1,10 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const user_reposetory_1 = __importDefault(require("./user.reposetory"));
-const handlers_1 = require("../handlers");
+import UserReposetory from "./user.reposetory";
+import { ResponseHandler } from "../handlers";
 class UserService {
     userReposetory;
     responseHandler;
@@ -72,8 +67,8 @@ class UserService {
         return updateQuery;
     };
 }
-exports.default = new UserService({
-    UserReposetory: user_reposetory_1.default,
-    ResponseHandler: handlers_1.ResponseHandler,
+export default new UserService({
+    UserReposetory,
+    ResponseHandler,
 });
 //# sourceMappingURL=user.service.js.map

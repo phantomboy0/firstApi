@@ -1,8 +1,7 @@
-import { userModel, responseHandler } from "../types";
-import UserReposetory, {
-  UserReposetory as userReposetory,
-} from "./user.reposetory";
-import { ResponseHandler } from "../handlers";
+import { responseHandler } from "../handlers/types";
+import { userModel, userReposetory } from "./types";
+import UserReposetory from "./user.reposetory";
+import ResponseHandler from "../handlers";
 
 class UserService {
   userReposetory: userReposetory;
@@ -57,6 +56,7 @@ class UserService {
       lastName: undefined,
       email: undefined,
       isBlocked: undefined,
+      avatar: undefined,
     };
 
     if (newData.new_phoneNumber.trim().length !== 0) {
@@ -93,10 +93,14 @@ class UserService {
     if (typeof newData.new_isBlocked === "boolean")
       updateQuery.isBlocked = newData.new_isBlocked;
 
+    if (typeof newData.new_avatar === "string")
+      updateQuery.avatar = newData.new_avatar;
+
     return updateQuery;
   };
 }
 
+export { UserService };
 export default new UserService({
   UserReposetory,
   ResponseHandler,

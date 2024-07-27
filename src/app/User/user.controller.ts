@@ -1,6 +1,6 @@
 import UserModel from "./user.model";
-import { ResponseHandler } from "../handlers";
-import { responseHandler } from "../types";
+import ResponseHandler from "../handlers";
+import { responseHandler } from "../handlers/types";
 import UserService from "./user.service";
 import { Request, Response } from "express";
 
@@ -39,7 +39,10 @@ class UserController {
           returnObj: "a user with this phone number exist",
         });
 
-      const newUser = new this.userModel(req.body);
+      const newUser = new this.userModel({
+        ...req.body,
+        avatar: "66a53b54534b7a1a60f5f4ed",
+      });
       try {
         await this.userService.createUser(newUser);
         return this.responseHandler.send({
@@ -140,20 +143,20 @@ class UserController {
       );
 
       if (result) {
-        return this.responseHandler.send({
+        this.responseHandler.send({
           res,
           statusCode: 200,
           returnObj: result,
         });
       } else {
-        return this.responseHandler.send({
+        this.responseHandler.send({
           res,
           statusCode: 400,
           returnObj: "no user found with this id to update",
         });
       }
     } catch (error: any) {
-      return this.responseHandler.send({
+      this.responseHandler.send({
         res,
         statusCode: 500,
         returnObj: error.message,

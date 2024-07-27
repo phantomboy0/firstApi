@@ -1,2 +1,3 @@
 import UserController from "./user.controller";
-export default UserController;
+import UserService from "./user.service";
+export { UserController, UserService };

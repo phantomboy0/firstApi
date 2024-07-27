@@ -1,10 +1,4 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserReposetory = void 0;
-const user_model_1 = __importDefault(require("./user.model"));
+import User from "./user.model";
 class UserReposetory {
     user;
     constructor(User) {
@@ -12,8 +6,8 @@ class UserReposetory {
     }
     createUser = async (user) => await new this.user(user).save();
     updateUser = async (_id, user) => await this.user.findByIdAndUpdate(_id, user, { new: true });
-    getUser = async (_id) => this.user.findById(_id);
-    deleteUser = async (_id) => this.user.findByIdAndDelete(_id);
+    getUser = async (_id) => await this.user.findById(_id);
+    deleteUser = async (_id) => await this.user.findByIdAndDelete(_id);
     isPhoneNumberExist = async (phoneNumber) => {
         if (await this.user.findOne({
             phoneNumber: phoneNumber,
@@ -23,6 +17,6 @@ class UserReposetory {
             return false;
     };
 }
-exports.UserReposetory = UserReposetory;
-exports.default = new UserReposetory(user_model_1.default);
+export { UserReposetory };
+export default new UserReposetory(User);
 //# sourceMappingURL=user.reposetory.js.map

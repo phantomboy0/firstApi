@@ -1,11 +1,6 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const user_model_1 = __importDefault(require("./user.model"));
-const handlers_1 = require("../handlers");
-const user_service_1 = __importDefault(require("./user.service"));
+import UserModel from "./user.model";
+import { ResponseHandler } from "../handlers";
+import UserService from "./user.service";
 class UserController {
     userModel;
     responseHandler;
@@ -122,14 +117,14 @@ class UserController {
                 });
             const result = await this.userService.updateUser(req.params._id, updateQuery);
             if (result) {
-                return this.responseHandler.send({
+                this.responseHandler.send({
                     res,
                     statusCode: 200,
                     returnObj: result,
                 });
             }
             else {
-                return this.responseHandler.send({
+                this.responseHandler.send({
                     res,
                     statusCode: 400,
                     returnObj: "no user found with this id to update",
@@ -137,7 +132,7 @@ class UserController {
             }
         }
         catch (error) {
-            return this.responseHandler.send({
+            this.responseHandler.send({
                 res,
                 statusCode: 500,
                 returnObj: error.message,
@@ -145,9 +140,9 @@ class UserController {
         }
     };
 }
-exports.default = new UserController({
-    UserModel: user_model_1.default,
-    ResponseHandler: handlers_1.ResponseHandler,
-    UserService: user_service_1.default,
+export default new UserController({
+    UserModel,
+    ResponseHandler,
+    UserService,
 });
 //# sourceMappingURL=user.controller.js.map

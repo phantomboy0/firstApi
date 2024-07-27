@@ -1,16 +1,12 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.Routes = void 0;
-const user_routes_1 = require("./user.routes");
-const express_1 = __importDefault(require("express"));
-const handlers_1 = require("../handlers");
-const router = express_1.default.Router();
-router.use("/user", user_routes_1.UserRoutes);
+import { UserRoutes } from "./user.routes";
+import { UploadRoutes } from "./upload.routes";
+import { Router } from "express";
+import { ResponseHandler } from "../handlers";
+const router = Router();
+router.use("/user", UserRoutes);
+router.use("/upload", UploadRoutes);
 router.get("/", (req, res) => {
-    return handlers_1.ResponseHandler.send({ res, statusCode: 200, returnObj: "OK" });
+    return ResponseHandler.send({ res, statusCode: 200, returnObj: "OK" });
 });
-exports.Routes = router;
+export const Routes = router;
 //# sourceMappingURL=index.js.map

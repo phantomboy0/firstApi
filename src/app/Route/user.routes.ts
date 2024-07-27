@@ -1,10 +1,8 @@
-import express from "express";
+import { Router, Request, Response } from "express";
 import mongoose from "mongoose";
-import { ResponseHandler } from "../handlers";
-import UserController from "../User";
-import { Request, Response } from "express";
+import { UserController } from "../User";
 
-const router = express.Router();
+const router = Router();
 const use = (fn: Function) => (req: Request, res: Response, next: any) => {
   Promise.resolve(fn(req, res, next)).catch(next);
 };

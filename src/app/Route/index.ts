@@ -1,11 +1,12 @@
 import { UserRoutes } from "./user.routes";
-import express from "express";
-import { ResponseHandler } from "../handlers";
-import { Request, Response } from "express";
+import { UploadRoutes } from "./upload.routes";
+import { Router, Request, Response } from "express";
+import ResponseHandler from "../handlers";
 
-const router = express.Router();
+const router = Router();
 
 router.use("/user", UserRoutes);
+router.use("/upload", UploadRoutes);
 
 router.get("/", (req: Request, res: Response) => {
   return ResponseHandler.send({ res, statusCode: 200, returnObj: "OK" });
