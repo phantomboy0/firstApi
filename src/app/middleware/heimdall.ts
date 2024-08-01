@@ -12,9 +12,11 @@ async function isTokenValid(accessToken: string): Promise<boolean> {
   return true;
 }
 
-const heimdall = async (req: any, res: Response, next: any) => {
+const heimdall = async (requieredRoles:string) => {
+return async (req: any, res: Response, next: any) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
 
+  console.log(requieredRoles)
   if (!accessToken)
     return ResponseHandler.send({
       res,
@@ -45,6 +47,7 @@ const heimdall = async (req: any, res: Response, next: any) => {
     });
   req._id = findedUser._id;
   next();
+}
 };
 
 export default heimdall;
