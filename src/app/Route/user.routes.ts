@@ -14,7 +14,7 @@ router.get(
 
   use(UserController.FindUserById.bind(UserController))
 );
-router.get("/", heimdall("ADMIN"), use(UserController.FindMe.bind(UserController)));
+router.get("/", heimdall("USER"), use(UserController.FindMe.bind(UserController)));
 
 router.post("/login", use(UserController.Login.bind(UserController)));
 

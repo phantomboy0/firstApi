@@ -1,6 +1,10 @@
 import { ObjectId } from "mongoose";
 import { Request, Response } from "express";
 
+
+export type role = "GUEST" | "USER" | "ADMIN"
+
+
 export interface createUserInterface {
   userName: string;
   password: string;

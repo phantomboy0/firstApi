@@ -11,7 +11,7 @@ const use = (fn: any) => (req: Request, res: Response, next: any) => {
 router.post(
   "/:tags",
   raw({ type: ["image/jpeg", "image/png"], limit: "15mb" }),
-  heimdall,
+  heimdall("ADMIN"),
   use(UploadController.createNewImage.bind(UploadController))
 );
 
