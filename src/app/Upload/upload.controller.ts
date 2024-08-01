@@ -3,6 +3,8 @@ import UploadService from "./upload.service";
 import ResponseHandler from "../handlers";
 import { responseHandler } from "../handlers/types";
 import { uploadService } from "./types";
+import { Schema, Types } from "mongoose";
+import { RequestExtended } from "../types";
 
 class UploadController {
   uploadService: uploadService;
@@ -12,32 +14,33 @@ class UploadController {
     this.responseHandler = ResponseHandler;
   }
 
-  createNewImage = async (req: Request, res: Response) => {
+  createNewImage = async (req: RequestExtended, res: Response) => {
     try {
-      if (!(await this.uploadService.checkUploader(req.params._id)))
+      if (!(await this.uploadService.checkUploader(req._id)))
         return this.responseHandler.send({
           res,
           statusCode: 403,
-          returnObj: "such user dosn't exist or can't upload",
+          returnObj: "such user doesn't exist or can't upload",
         });
 
       const result = await this.uploadService.createNewImage({
         image: req.body,
-        uploader: req.params._id,
+        uploader: req._id,
         tags: req.params.tags,
       });
 
       if (result) {
         if (req.params.tags === "avatar")
-          await this.uploadService.setNewAvatar(req.params._id, {
+          await this.uploadService.setNewAvatar(req._id, {
             avatar: result._id,
           });
+
         return this.responseHandler.send({
           res,
           statusCode: 200,
           returnObj: {
             _id: result._id,
-            uploader: result.uploader[0],
+            uploader: result.uploader,
             tags: result.tags,
           },
         });
@@ -58,7 +61,9 @@ class UploadController {
 
   getImage = async (req: Request, res: Response) => {
     try {
-      const result = await this.uploadService.getImage(req.params._id);
+      const result = await this.uploadService.getImage(
+        new Schema.Types.ObjectId(req.params._id)
+      );
 
       if (result) {
         var data = result.image;
@@ -68,6 +73,8 @@ class UploadController {
           "Content-Type": "image/png",
           "Content-Length": img.length,
         });
+
+        // ! this res can't use responseHandler, WHY?
         res.end(img);
         //return this.responseHandler.send({ res, statusCode: 200, returnObj: img });
       } else
@@ -87,14 +94,16 @@ class UploadController {
 
   getImageData = async (req: Request, res: Response) => {
     try {
-      const result = await this.uploadService.getImage(req.params._id);
+      const result = await this.uploadService.getImage(
+        new Schema.Types.ObjectId(req.params._id)
+      );
 
       if (result)
         return this.responseHandler.send({
           res,
           statusCode: 200,
           returnObj: {
-            uploader: result.uploader[0],
+            uploader: result.uploader,
             tags: result.tags,
             createdAt: result.createdAt,
             updatedAt: result.updatedAt,
@@ -117,7 +126,9 @@ class UploadController {
 
   deleteImage = async (req: Request, res: Response) => {
     try {
-      const result = await this.uploadService.deleteImage(req.params._id);
+      const result = await this.uploadService.deleteImage(
+        new Types.ObjectId(req.params._id)
+      );
 
       if (result)
         return this.responseHandler.send({

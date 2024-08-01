@@ -1,5 +1,5 @@
 import UserReposetory from "./user.reposetory";
-import { ResponseHandler } from "../handlers";
+import ResponseHandler from "../handlers";
 class UserService {
     userReposetory;
     responseHandler;
@@ -29,7 +29,7 @@ class UserService {
             console.error(error);
         }
     };
-    checkFeildsNeedsToUpdate = async (newData) => {
+    checkFeildsNeedsToUpdate = async (res, newData) => {
         let updateQuery = {
             phoneNumber: undefined,
             userName: undefined,
@@ -38,18 +38,22 @@ class UserService {
             lastName: undefined,
             email: undefined,
             isBlocked: undefined,
+            avatar: undefined,
         };
-        if (newData.new_phoneNumber.trim().length !== 0) {
-            if (!this.isPhoneNumberValid(newData.new_phoneNumber))
-                return {
+        if (newData.new_phoneNumber.length != 0) {
+            if (!this.isPhoneNumberValid(newData.new_phoneNumber)) {
+                this.responseHandler.send({
+                    res,
                     statusCode: 409,
                     returnObj: "phone number should formatted like 09xxxxxxxxx",
-                };
+                });
+            }
             if (await this.isPhoneNumberExist(newData.new_phoneNumber))
-                return {
+                this.responseHandler.send({
+                    res,
                     statusCode: 409,
                     returnObj: "a user with this phone number exist",
-                };
+                });
             updateQuery.phoneNumber = newData.new_phoneNumber;
         }
         if (typeof newData.new_userName === "string")
@@ -64,9 +68,12 @@ class UserService {
             updateQuery.email = newData.new_email;
         if (typeof newData.new_isBlocked === "boolean")
             updateQuery.isBlocked = newData.new_isBlocked;
+        if (typeof newData.new_avatar === "string")
+            updateQuery.avatar = newData.new_avatar;
         return updateQuery;
     };
 }
+export { UserService };
 export default new UserService({
     UserReposetory,
     ResponseHandler,

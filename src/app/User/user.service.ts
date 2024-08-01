@@ -1,7 +1,10 @@
 import { responseHandler } from "../handlers/types";
-import { userModel, userReposetory } from "./types";
+import { createUserInterface, userReposetory } from "./types";
 import UserReposetory from "./user.reposetory";
 import ResponseHandler from "../handlers";
+import { Request, Response } from "express";
+import { bcrypt } from "../util";
+import { ObjectId } from "mongoose";
 
 class UserService {
   userReposetory: userReposetory;
@@ -17,18 +20,22 @@ class UserService {
     this.responseHandler = ResponseHandler;
   }
 
-  createUser = async (user: userModel) =>
-    await this.userReposetory.createUser(user);
-  updateUser = async (_id: string, user: any) =>
+  createUser = async (user: createUserInterface) =>
+    await this.userReposetory.createUser({
+      ...user,
+      password: bcrypt.hashPassword(user.password),
+    });
+
+  updateUser = async (_id: ObjectId, user: any) =>
     await this.userReposetory.updateUser(_id, user);
-  getUser = async (_id: string) => this.userReposetory.getUser(_id);
-  deleteUser = async (_id: string) => this.userReposetory.deleteUser(_id);
-  /**
-   * check if the PhoneNumber is in iran's correct format
-   * @param res express Respone
-   * @param phoneNumber the PhoneNumber to check
-   * @returns
-   */
+
+  getUser = async (_id: ObjectId) => await this.userReposetory.getUser(_id);
+
+  findUserByUserName = async (userName: string) =>
+    await this.userReposetory.findUserByUserName(userName);
+
+  deleteUser = async (_id: ObjectId) => this.userReposetory.deleteUser(_id);
+
   isPhoneNumberValid = (phoneNumber: string): boolean => {
     if (/^09[0-9]{9}$/.test(phoneNumber)) return true;
     else return false;
@@ -47,7 +54,10 @@ class UserService {
     }
   };
 
-  checkFeildsNeedsToUpdate = async (newData: any): Promise<object> => {
+  checkFeildsNeedsToUpdate = async (
+    res: Response,
+    newData: any
+  ): Promise<object> => {
     let updateQuery = {
       phoneNumber: undefined,
       userName: undefined,
@@ -59,18 +69,21 @@ class UserService {
       avatar: undefined,
     };
 
-    if (newData.new_phoneNumber.trim().length !== 0) {
-      if (!this.isPhoneNumberValid(newData.new_phoneNumber))
-        return {
+    if (newData.new_phoneNumber.length != 0) {
+      if (!this.isPhoneNumberValid(newData.new_phoneNumber)) {
+        this.responseHandler.send({
+          res,
           statusCode: 409,
           returnObj: "phone number should formatted like 09xxxxxxxxx",
-        };
+        });
+      }
 
       if (await this.isPhoneNumberExist(newData.new_phoneNumber))
-        return {
+        this.responseHandler.send({
+          res,
           statusCode: 409,
           returnObj: "a user with this phone number exist",
-        };
+        });
 
       updateQuery.phoneNumber = newData.new_phoneNumber;
     }
@@ -98,6 +111,9 @@ class UserService {
 
     return updateQuery;
   };
+
+  updateAccessToken = async (_id: string, token: string) =>
+    await this.userReposetory.updateAccessToken(_id, token);
 }
 
 export { UserService };

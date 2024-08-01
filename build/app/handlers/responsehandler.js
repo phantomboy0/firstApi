@@ -11,5 +11,5 @@ class ResponseHandler {
     }
 }
 export { ResponseHandler };
-export const _ResponseHandler = new ResponseHandler();
+export default new ResponseHandler();
 //# sourceMappingURL=responsehandler.js.map

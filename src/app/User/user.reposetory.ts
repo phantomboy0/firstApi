@@ -1,5 +1,6 @@
 import User from "./user.model";
-import { userModel } from "./types";
+import { createUserInterface } from "./types";
+import { ObjectId } from "mongoose";
 
 class UserReposetory {
   user: any;
@@ -7,11 +8,13 @@ class UserReposetory {
     this.user = User;
   }
 
-  createUser = async (user: userModel) => await new this.user(user).save();
-  updateUser = async (_id: string, user: userModel) =>
+  createUser = async (user: object) => await new this.user(user).save();
+  updateUser = async (_id: ObjectId, user: createUserInterface) =>
     await this.user.findByIdAndUpdate(_id, user, { new: true });
-  getUser = async (_id: string) => await this.user.findById(_id);
-  deleteUser = async (_id: string) => await this.user.findByIdAndDelete(_id);
+  getUser = async (_id: ObjectId) => await this.user.findById(_id);
+  findUserByUserName = async (userName: string) =>
+    await this.user.findOne({ userName });
+  deleteUser = async (_id: ObjectId) => await this.user.findByIdAndDelete(_id);
 
   isPhoneNumberExist = async (phoneNumber: string): Promise<boolean> => {
     if (
@@ -22,6 +25,9 @@ class UserReposetory {
       return true;
     else return false;
   };
+
+  updateAccessToken = async (_id: string, accessToken: string) =>
+    await this.user.findByIdAndUpdate(_id, { accessToken });
 }
 
 export { UserReposetory };

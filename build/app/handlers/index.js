@@ -1,4 +1,3 @@
-import { _ResponseHandler, ResponseHandler as responseHandler, } from "./responsehandler.js";
-export const ResponseHandler = _ResponseHandler;
-export { responseHandler };
+import ResponseHandler from "./responsehandler";
+export default ResponseHandler;
 //# sourceMappingURL=index.js.map

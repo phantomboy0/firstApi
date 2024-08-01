@@ -1,6 +1,8 @@
+import { ObjectId } from "mongoose";
+
 export type uploadModel = {
   image: any;
-  uploader: any;
+  uploader: ObjectId;
   tags: string;
 };
 
