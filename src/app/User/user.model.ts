@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
     },
     accessToken: { type: String, select: false },
     refreshToken: { type: String },
-    role: {type: String, required: true },
+    roles: {type: [String], required: true },
   },
   { timestamps: true, versionKey: false }
 );

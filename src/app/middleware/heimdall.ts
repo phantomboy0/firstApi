@@ -46,10 +46,10 @@ const heimdall = function async(baseRequieredRole: role) {
         returnObj: "user not found",
       });
 
-    isUserRoleSufficient(foundedUser.role, baseRequieredRole, res);
+    isUserRoleSufficient(foundedUser.roles, baseRequieredRole, res);
 
     req._id = foundedUser._id;
-    req.role = foundedUser.role;
+    req.roles = foundedUser.roles;
 
     next();
   };

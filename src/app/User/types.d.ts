@@ -2,7 +2,7 @@ import { ObjectId } from "mongoose";
 import { Request, Response } from "express";
 
 
-export type role = "GUEST" | "USER" | "ADMIN"
+export type role = "USER" | "MANAGER" | "MODERATOR" | "ADMIN"
 
 
 export interface createUserInterface {
