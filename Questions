@@ -3,15 +3,21 @@ do we just use one ResponseHandler object (line 13) in user.routes.js and never 
 use index.js in Route folder instead of user.routes directly!
 use index.js in app folder instead of the folders directly
 
-* made a new file for mongoose connection in database folder
+- made a new file for mongoose connection in database folder
 
+---
 
-
-
-****
 microsevice
 JSDocs
 httpie
 
-
 uploadd img for usr
+
+//TODO
+[ ] => update accessToken user - add new object instad of string
+-Key: string,
+role: string,
+device(MACID): string,
+numberOFdevicesLogedInWithThisRole
+[ ] => porpose of refresh tokenn?
+[ ] => client(4), manager(3 usr) , moddarator(3 usr) , admin(1 usr)

@@ -3,6 +3,7 @@
     "@types/bcrypt": "^5.0.2",
     "@types/bun": "^1.1.6",
     "@types/jsonwebtoken": "^9.0.6",
+    "@types/mongodb": "^4.0.7",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.14.12",
     "bcrypt": "^5.1.1",

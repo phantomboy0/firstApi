@@ -6,7 +6,7 @@ import { RequestExtended } from "../types";
 import UserService from "./user.service";
 import { Response } from "express";
 import { bcrypt, jwt } from "../util";
-import { Types, Schema } from "mongoose";
+import { Types } from "mongoose";
 
 class UserController {
   userModel: any;
@@ -69,6 +69,7 @@ class UserController {
   FindUserById = async (req: RequestExtended, res: Response) => {
     try {
       const result = await this.userService.getUser(
+        //@ts-ignore
         new Types.ObjectId(req.params._id)
       );
 
@@ -102,7 +103,16 @@ class UserController {
 
   DeleteUserById = async (req: RequestExtended, res: Response) => {
     try {
+      if (req.role !== "ADMIN")
+        if (req._id != req.params._id)
+          return this.responseHandler.send({
+            res,
+            statusCode: 403,
+            returnObj: "you can't delete other's data",
+          });
+
       const result = await this.userService.deleteUser(
+        //@ts-ignore
         new Types.ObjectId(req.params._id)
       );
 
@@ -130,12 +140,20 @@ class UserController {
 
   UpdateUserById = async (req: RequestExtended, res: Response) => {
     try {
+      if (req.role !== "ADMIN")
+        if (req._id != req.params._id)
+          return this.responseHandler.send({
+            res,
+            statusCode: 403,
+            returnObj: "you can't change other's data",
+          });
+
       const updateQuery = await this.userService.checkFeildsNeedsToUpdate(
         res,
         req.body
       );
-
       const result = await this.userService.updateUser(
+        //@ts-ignore
         new Types.ObjectId(req.params._id),
         updateQuery
       );
@@ -194,7 +212,15 @@ class UserController {
     return this.responseHandler.send({
       res,
       statusCode: 200,
-      returnObj: { firstName: findedUser.firstName, accessToken },
+      returnObj: {
+        firstName: findedUser.firstName,
+        lastName: findedUser.lastName,
+        _id: findedUser._id,
+        phoneNumber: findedUser.phoneNumber,
+        email: findedUser.email,
+        avatar: findedUser.avatar,
+        accessToken,
+      },
     });
   };
 

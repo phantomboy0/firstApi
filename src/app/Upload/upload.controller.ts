@@ -62,7 +62,8 @@ class UploadController {
   getImage = async (req: Request, res: Response) => {
     try {
       const result = await this.uploadService.getImage(
-        new Schema.Types.ObjectId(req.params._id)
+        //@ts-ignore
+        new Types.ObjectId(req.params._id)
       );
 
       if (result) {
@@ -95,7 +96,8 @@ class UploadController {
   getImageData = async (req: Request, res: Response) => {
     try {
       const result = await this.uploadService.getImage(
-        new Schema.Types.ObjectId(req.params._id)
+        //@ts-ignores
+        new Types.ObjectId(req.params._id)
       );
 
       if (result)
@@ -124,9 +126,23 @@ class UploadController {
     }
   };
 
-  deleteImage = async (req: Request, res: Response) => {
+  deleteImage = async (req: RequestExtended, res: Response) => {
     try {
+      const imageData = await this.uploadService.getImage(
+        //@ts-ignores
+        new Types.ObjectId(req.params._id)
+      );
+
+      if (req.role !== "ADMIN")
+        if (!new Types.ObjectId(req._id).equals(imageData.uploader))
+          return this.responseHandler.send({
+            res,
+            statusCode: 403,
+            returnObj: "you can't delete other's image",
+          });
+
       const result = await this.uploadService.deleteImage(
+        //@ts-ignore
         new Types.ObjectId(req.params._id)
       );
 
