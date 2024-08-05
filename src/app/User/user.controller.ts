@@ -7,6 +7,7 @@ import UserService from "./user.service";
 import { Response } from "express";
 import { bcrypt, jwt } from "../util";
 import { Types } from "mongoose";
+import { loadEnvFile } from "process";
 
 class UserController {
   userModel: any;
@@ -41,6 +42,13 @@ class UserController {
           res,
           statusCode: 409,
           returnObj: "a user with this phone number exist",
+        });
+
+      if (await this.userService.isUserNameExist(req.body.userName))
+        return this.responseHandler.send({
+          res,
+          statusCode: 409,
+          returnObj: "a user with this UserName exist",
         });
 
       try {
@@ -103,14 +111,6 @@ class UserController {
 
   DeleteUserById = async (req: RequestExtended, res: Response) => {
     try {
-      if (req.role !== "ADMIN")
-        if (req._id != req.params._id)
-          return this.responseHandler.send({
-            res,
-            statusCode: 403,
-            returnObj: "you can't delete other's data",
-          });
-
       const result = await this.userService.deleteUser(
         //@ts-ignore
         new Types.ObjectId(req.params._id)
@@ -140,14 +140,6 @@ class UserController {
 
   UpdateUserById = async (req: RequestExtended, res: Response) => {
     try {
-      if (req.role !== "ADMIN")
-        if (req._id != req.params._id)
-          return this.responseHandler.send({
-            res,
-            statusCode: 403,
-            returnObj: "you can't change other's data",
-          });
-
       const updateQuery = await this.userService.checkFeildsNeedsToUpdate(
         res,
         req.body
@@ -181,10 +173,12 @@ class UserController {
   };
 
   Login = async (req: RequestExtended, res: Response) => {
-    const { userName, password } = req.body;
-    const findedUser = await this.userService.findUserByUserName(userName);
+    const { userName, password, loginAs } = req.body;
+    const userAgent = req.headers["user-agent"] || "UNDEFINED_USERAGENT";
 
-    if (!findedUser)
+    const foundedUser = await this.userService.findUserByUserName(userName);
+
+    if (!foundedUser)
       return this.responseHandler.send({
         res,
         statusCode: 403,
@@ -193,7 +187,7 @@ class UserController {
 
     const comperePassword = await bcrypt.comparePassword(
       password,
-      findedUser.password
+      foundedUser.password
     );
 
     if (!comperePassword)
@@ -203,22 +197,73 @@ class UserController {
         returnObj: "Wrong Password",
       });
 
+    for (let i = 0; i < foundedUser.roles.length; i++) {
+      if (!foundedUser.roles.includes(loginAs))
+        return this.responseHandler.send({
+          res,
+          statusCode: 403,
+          returnObj: "can't login with this role",
+        });
+    }
+
     const accessToken: string = await jwt.tokenGenarator({
-      userName: findedUser.userName,
-      _id: findedUser._id,
+      userName: foundedUser.userName,
+      _id: foundedUser._id,
+      loginAs: req.body.loginAs,
     });
 
-    await this.userService.updateAccessToken(findedUser._id, accessToken);
+    if (
+      //! the first time user logIn with a new userAgent, it still says the device exist!
+      await this.userService.isThereAnySessionsWithThisRoleAndDevice(
+        foundedUser._id,
+        loginAs,
+        userAgent
+      )
+    ) {
+      console.log("LOGexIST");
+      await this.userService.updateExistingSessionAccessToken(
+        foundedUser._id,
+        loginAs,
+        userAgent,
+        accessToken
+      );
+    } else {
+      console.log("LOGDosn'texIST");
+      if (
+        !(await this.userService.reachedMaxActiveSessions(foundedUser, loginAs))
+      ) {
+        await this.userService.createNewSession(
+          foundedUser._id,
+          loginAs,
+          userAgent,
+          accessToken
+        );
+      } else {
+        await this.userService.deleteOldestSessionWithThisRole(
+          foundedUser._id,
+          loginAs
+        );
+
+        await this.userService.createNewSession(
+          foundedUser._id,
+          loginAs,
+          userAgent,
+          accessToken
+        );
+      }
+    }
+
+    await this.userService.updateAccessToken(foundedUser._id, accessToken);
     return this.responseHandler.send({
       res,
       statusCode: 200,
       returnObj: {
-        firstName: findedUser.firstName,
-        lastName: findedUser.lastName,
-        _id: findedUser._id,
-        phoneNumber: findedUser.phoneNumber,
-        email: findedUser.email,
-        avatar: findedUser.avatar,
+        firstName: foundedUser.firstName,
+        lastName: foundedUser.lastName,
+        _id: foundedUser._id,
+        phoneNumber: foundedUser.phoneNumber,
+        email: foundedUser.email,
+        avatar: foundedUser.avatar,
         accessToken,
       },
     });
@@ -254,6 +299,10 @@ class UserController {
         returnObj: error.message,
       });
     }
+  };
+
+  createAdminAccountIfThereIsNone = async () => {
+    await this.userService.createAdminAccountIfThereIsNone();
   };
 }
 

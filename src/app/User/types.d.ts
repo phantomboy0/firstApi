@@ -1,9 +1,7 @@
 import { ObjectId } from "mongoose";
 import { Request, Response } from "express";
 
-
-export type role = "USER" | "MANAGER" | "MODERATOR" | "ADMIN"
-
+export type role = "CLIENT" | "MANAGER" | "MODERATOR" | "ADMIN";
 
 export interface createUserInterface {
   userName: string;
@@ -13,6 +11,7 @@ export interface createUserInterface {
   phoneNumber: string;
   email: string;
   isBlocked: boolean;
+  roles: Array<String>;
   avatar: ObjectId;
 }
 

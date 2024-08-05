@@ -1,6 +1,7 @@
 import User from "./user.model";
 import { createUserInterface } from "./types";
 import { ObjectId } from "mongoose";
+import { Session } from "inspector";
 
 class UserReposetory {
   user: any;
@@ -26,8 +27,53 @@ class UserReposetory {
     else return false;
   };
 
+  isUserNameExist = async (userName: string): Promise<boolean> => {
+    if (
+      await this.user.findOne({
+        userName: userName,
+      })
+    )
+      return true;
+    else return false;
+  };
+
   updateAccessToken = async (_id: string, accessToken: string) =>
     await this.user.findByIdAndUpdate(_id, { accessToken });
+
+  isThereAnyAdminAccounts = async () => {
+    return await this.user.findOne({ roles: ["ADMIN"] });
+  };
+
+  getSession = async (_id: string, role: string, device: string) => {
+    return await this.user.findOne({
+      _id,
+      "sessions.role": role,
+      "sessions.device": device,
+    });
+  };
+
+  updateExistingSessionAccessToken = async (
+    _id: string,
+    role: string,
+    device: string,
+    newAccessToken: string
+  ) => {
+    return await this.user.findOneAndUpdate(
+      {
+        _id,
+        "sessions.role": role,
+        "sessions.device": device,
+      },
+      { $set: { "sessions.$.accessToken": newAccessToken } }
+    );
+  };
+
+  createNewSession = async (_id: any, newSession: Object) => {
+    const user = await this.user.findById(_id);
+    if (!user) return "USER NOT FOUND";
+    await user.sessions.push(newSession);
+    user.save();
+  };
 }
 
 export { UserReposetory };

@@ -133,7 +133,7 @@ class UploadController {
         new Types.ObjectId(req.params._id)
       );
 
-      if (req.role !== "ADMIN")
+      if (req.roles !== "ADMIN")
         if (!new Types.ObjectId(req._id).equals(imageData.uploader))
           return this.responseHandler.send({
             res,

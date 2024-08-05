@@ -1,14 +1,17 @@
-import { role } from '../User/types';
-import { Response } from 'express';
-import ResponseHandler from '../handlers';
-import jwt from 'jsonwebtoken';
-import { UserService } from '../User';
-import { RequestExtended } from '../types';
+import { role } from "../User/types";
+import { Response } from "express";
+import ResponseHandler from "../handlers";
+import jwt from "jsonwebtoken";
+import { UserService } from "../User";
+import { RequestExtended } from "../types";
+import { log } from "console";
 
-const razvan = async (allowedRoles: role[]) => {
-  return async (req: RequestExtended, res: Response, next: any) => {
+const razvan = function async(allowedRoles: role[]) {
+  return async (req: any, res: Response, next: any) => {
     for (let i = 0; i < allowedRoles.length; i++) {
       if (!req.roles.includes(allowedRoles[i])) {
+        console.log(allowedRoles[i]);
+
         return ResponseHandler.send({
           res,
           statusCode: 403,
@@ -19,3 +22,5 @@ const razvan = async (allowedRoles: role[]) => {
     next();
   };
 };
+
+export default razvan;

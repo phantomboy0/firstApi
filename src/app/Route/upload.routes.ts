@@ -11,7 +11,7 @@ const use = (fn: any) => (req: Request, res: Response, next: any) => {
 router.post(
   "/:tags",
   raw({ type: ["image/jpeg", "image/png"], limit: "15mb" }),
-  heimdall("USER"),
+  heimdall,
   use(UploadController.createNewImage.bind(UploadController))
 );
 
@@ -24,7 +24,7 @@ router.get(
 
 router.delete(
   "/:_id",
-  heimdall("USER"),
+  heimdall,
   use(UploadController.deleteImage.bind(UploadController))
 );
 
