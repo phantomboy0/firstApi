@@ -37,14 +37,14 @@ class UserReposetory {
     else return false;
   };
 
-  updateAccessToken = async (_id: string, accessToken: string) =>
+  updateAccessToken = async (_id: ObjectId, accessToken: string) =>
     await this.user.findByIdAndUpdate(_id, { accessToken });
 
   isThereAnyAdminAccounts = async () => {
     return await this.user.findOne({ roles: ["ADMIN"] });
   };
 
-  getSession = async (_id: string, role: string, device: string) => {
+  getSession = async (_id: ObjectId, role: string, device: string) => {
     return await this.user.findOne({
       _id,
       "sessions.role": role,
@@ -53,7 +53,7 @@ class UserReposetory {
   };
 
   updateExistingSessionAccessToken = async (
-    _id: string,
+    _id: ObjectId,
     role: string,
     device: string,
     newAccessToken: string
@@ -68,11 +68,15 @@ class UserReposetory {
     );
   };
 
-  createNewSession = async (_id: any, newSession: Object) => {
+  createNewSession = async (_id: ObjectId, newSession: Object) => {
     const user = await this.user.findById(_id);
     if (!user) return "USER NOT FOUND";
     await user.sessions.push(newSession);
     user.save();
+  };
+
+  LogoutFromAllSessions = async (_id: ObjectId) => {
+    return await this.user.findByIdAndUpdate(_id, { sessions: [] });
   };
 }
 

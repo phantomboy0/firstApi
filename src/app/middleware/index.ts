@@ -1,3 +1,3 @@
-import heimdall from './heimdall';
-import razvan from './razvan';
-export { heimdall, razvan };
+import heimdall from "./heimdall";
+import gateKeeper from "./gateKeeper";
+export { heimdall, gateKeeper };

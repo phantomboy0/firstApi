@@ -47,7 +47,6 @@ const heimdall = async (req: any, res: Response, next: any) => {
 
   req._id = foundedUser._id;
   req.roles = foundedUser.roles;
-  console.log(req.roles);
 
   next();
 };

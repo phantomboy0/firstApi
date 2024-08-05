@@ -213,7 +213,6 @@ class UserController {
     });
 
     if (
-      //! the first time user logIn with a new userAgent, it still says the device exist!
       await this.userService.isThereAnySessionsWithThisRoleAndDevice(
         foundedUser._id,
         loginAs,
@@ -267,6 +266,34 @@ class UserController {
         accessToken,
       },
     });
+  };
+
+  LogoutFromAllSessions = async (req: RequestExtended, res: Response) => {
+    try {
+      const result = await this.userService.LogoutFromAllSessions(
+        //@ts-ignore
+        new Types.ObjectId(req._id)
+      );
+
+      if (result)
+        return this.responseHandler.send({
+          res,
+          statusCode: 200,
+          returnObj: "log out from all sessions successfully",
+        });
+      else
+        return this.responseHandler.send({
+          res,
+          statusCode: 403,
+          returnObj: "no user found with this _id",
+        });
+    } catch (error: unknown) {
+      return this.responseHandler.send({
+        res,
+        statusCode: 510,
+        returnObj: { error },
+      });
+    }
   };
 
   FindMe = async (req: RequestExtended, res: Response) => {

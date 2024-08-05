@@ -1,17 +1,11 @@
 import { role } from "../User/types";
 import { Response } from "express";
 import ResponseHandler from "../handlers";
-import jwt from "jsonwebtoken";
-import { UserService } from "../User";
-import { RequestExtended } from "../types";
-import { log } from "console";
 
-const razvan = function async(allowedRoles: role[]) {
+const gateKeeper = function async(allowedRoles: role[]) {
   return async (req: any, res: Response, next: any) => {
-    for (let i = 0; i < allowedRoles.length; i++) {
-      if (!req.roles.includes(allowedRoles[i])) {
-        console.log(allowedRoles[i]);
-
+    for (let i = 0; i < req.roles.length; i++) {
+      if (!allowedRoles.includes(req.roles[i])) {
         return ResponseHandler.send({
           res,
           statusCode: 403,
@@ -23,4 +17,4 @@ const razvan = function async(allowedRoles: role[]) {
   };
 };
 
-export default razvan;
+export default gateKeeper;

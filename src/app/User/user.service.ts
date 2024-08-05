@@ -118,11 +118,11 @@ class UserService {
     return updateQuery;
   };
 
-  updateAccessToken = async (_id: string, token: string) =>
+  updateAccessToken = async (_id: ObjectId, token: string) =>
     await this.userReposetory.updateAccessToken(_id, token);
 
   isThereAnySessionsWithThisRoleAndDevice = async (
-    _id: string,
+    _id: ObjectId,
     role: string,
     device: string
   ) => {
@@ -130,7 +130,7 @@ class UserService {
   };
 
   updateExistingSessionAccessToken = async (
-    _id: string,
+    _id: ObjectId,
     role: string,
     device: string,
     newAccessToken: string
@@ -179,7 +179,7 @@ class UserService {
   };
 
   createNewSession = async (
-    _id: string,
+    _id: ObjectId,
     role: string,
     device: string,
     accessToken: string
@@ -219,7 +219,6 @@ class UserService {
       return;
     }
 
-    // Find the oldest CLIENT session
     let oldestSession = clientSessions[0];
     let oldestSessionIndex = user.sessions.findIndex(
       (session: { role: string }) => session === oldestSession
@@ -234,9 +233,12 @@ class UserService {
       }
     });
 
-    // Remove the oldest CLIENT session
     user.sessions.splice(oldestSessionIndex, 1);
     await user.save();
+  };
+
+  LogoutFromAllSessions = async (_id: ObjectId) => {
+    return await this.userReposetory.LogoutFromAllSessions(_id);
   };
 }
 
